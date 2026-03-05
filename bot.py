@@ -366,7 +366,7 @@ xcch = carlos.get("cch")
 # استبدل السطر 337 بهذا بالكامل:
 # هذا السطر ذكي لأنه يفحص وجود المتغير قبل استخدامه
 if 'xmax' in globals() or 'xmax' in locals():
-    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+    
 else:
     # إذا لم يجد المتغير، يقوم بتعريفه فوراً كقاموس فارغ لمنع الانهيار
     xmax = {"cleaner": {}}
@@ -2287,6 +2287,7 @@ while True:
                     cleaner = None
 
                 # انظر للمسافات هنا (يجب أن يبدأ السطر من هنا)
+
                 handle_update(chat_id, from_id, text, data, message_id, res_msg, cleaner)
 
                 # ==========================================
