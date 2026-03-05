@@ -365,12 +365,15 @@ xcch = carlos.get("cch")
 # نضمن أولاً أن xmax قاموس قبل طلب get منه
 # استبدل السطر 337 بهذا بالكامل:
 # هذا السطر ذكي لأنه يفحص وجود المتغير قبل استخدامه
-if 'xmax' in globals() or 'xmax' in locals():
-    
-else:
-    # إذا لم يجد المتغير، يقوم بتعريفه فوراً كقاموس فارغ لمنع الانهيار
-    xmax = {"cleaner": {}}
-    cleaner = None
+                # السطر 368 وما بعده
+                if 'xmax' in globals() or 'xmax' in locals():
+                    # هنا نضع الكود الذي ينفذ إذا وجد المتغير
+                    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+                else:
+                    # إذا لم يجد المتغير، يقوم بتعريفه فوراً كقاموس فارغ لمنع الانهيار
+                    xmax = {"cleaner": {}}
+                    cleaner = None
+
 
 
 
