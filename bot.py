@@ -1084,11 +1084,12 @@ if data == "AddCh2":
 if text and carlos.get("data") == "okch2" and from_id == int(admin):
     bot("sendMessage", {
         "chat_id": chat_id,
-        "text": fInternal_text := f"،🖇:تم اضافه القناة [{text}]\n،🖇:قم برفع البوت ادمن في القناة",
+        "text": f"🖇:تم اضافه القناة [{text}]\n🖇:قم برفع البوت ادمن في القناة",
         "reply_markup": json.dumps({
             "inline_keyboard": [[{"text": "🔙", "callback_data": "back"}]]
         })
     })
+
     carlos["ch2"] = str(text)
     carlos["data"] = "stop"
     save_data("data/carlos.json", carlos)
