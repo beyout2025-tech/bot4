@@ -2280,11 +2280,14 @@ while True:
                 message_id = res_msg.get('message_id')
 
                 # هنا يتم استخراج حالة المنظف بشكل آمن
+                                # هنا يتم استخراج حالة المنظف بشكل آمن
                 if 'xmax' in globals():
                     cleaner = xmax.get("cleaner", {}).get(str(chat_id))
                 else:
                     cleaner = None
-handle_update(chat_id, from_id, text, data, message_id, res_msg, cleaner)
+
+                # انظر للمسافات هنا (يجب أن يبدأ السطر من هنا)
+                handle_update(chat_id, from_id, text, data, message_id, res_msg, cleaner)
 
                 # ==========================================
                 # هنا تضع كل أوامر الـ if (المنطق الخاص بالبوت)
