@@ -2226,7 +2226,7 @@ print("البوت بدأ العمل الآن...")
 last_update_id = 0
 
 while True:
-    global xmax # أضف هذا السطر هنا
+    
     try:
         # جلب التحديثات الجديدة
         updates = bot('getUpdates', {'offset': last_update_id + 1, 'timeout': 30})
@@ -2263,5 +2263,6 @@ while True:
     except Exception as e:
         print(f"خطأ في الاتصال: {e}")
         time.sleep(1)
+
 
 
