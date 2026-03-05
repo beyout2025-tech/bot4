@@ -48,8 +48,10 @@ members = data_members.get("members_list", [])
 data_groups = load_json("data/groups.json", {"groups_list": []})
 groups = data_groups.get("groups_list", [])
 # تحميل بيانات المنظف بشكل آمن
+# تأكد أن هذا في بداية الملف تماماً
 data_xmax = load_json("data/xmax.json", {"cleaner": {}})
 xmax = data_xmax
+
 
 
 
@@ -334,7 +336,14 @@ xch = carlos.get("ch")
 xcch = carlos.get("cch")
 # chat_id يجب أن يكون مستخرجاً من التحديث (Update) كما في الجزء الأول
 # نضمن أولاً أن xmax قاموس قبل طلب get منه
-cleaner = xmax.get("cleaner", {}).get(str(chat_id)) if isinstance(xmax, dict) else None
+# استبدل السطر 337 بهذا بالكامل:
+try:
+    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+except (NameError, AttributeError):
+    data_xmax = load_json("data/xmax.json", {"cleaner": {}})
+    xmax = data_xmax
+    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+
 
 
 # --- (الإحصائيات والمتغيرات) --- #
@@ -2217,6 +2226,7 @@ print("البوت بدأ العمل الآن...")
 last_update_id = 0
 
 while True:
+    global xmax # أضف هذا السطر هنا
     try:
         # جلب التحديثات الجديدة
         updates = bot('getUpdates', {'offset': last_update_id + 1, 'timeout': 30})
