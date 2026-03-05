@@ -6,18 +6,45 @@ import time
 from datetime import datetime
 from dotenv import load_dotenv
 
-# تفعيل قراءة ملف .env
+# 1. تفعيل قراءة ملف .env
 load_dotenv()
 
 token = os.getenv("TOKEN")
 admin_id_env = os.getenv("ADMIN_ID")
 admin = int(admin_id_env) if admin_id_env else 0
 
+# 2. تعريف الدالة أولاً لكي يتعرف عليها البوت
+def load_json(path, default_value=None):
+    if default_value is None: default_value = {}
+    if os.path.exists(path):
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                return json.load(f)
+        except: return default_value
+    return default_value
 
+# 3. إنشاء المجلد
+def handle_update(chat_id, from_id, text, data, message_id, res_msg, cleaner):
+    global xmax, carlos, members, groups, XQ_3X, last_update_id
+    # هنا تبدأ الـ 2000 سطر الخاصة بك
+
+    # هنا تبدأ كل أوامرك الـ 2000 سطر
+    # (يجب أن تضغط Tab لكل الأسطر التي تليها لتصبح داخل هذه الدالة)
+
+
+
+if not os.path.exists("data"): 
+    os.makedirs("data")
+
+# 4. الآن نقوم بتحميل البيانات بأمان (بعد تعريف الدالة)
+xmax = load_json("data/xmax.json", {"cleaner": {}})
+carlos = load_json("data/carlos.json", {"admin": [], "ban": [], "ok": "no"})
+data_members = load_json("data/members.json", {"members_list": []})
+members = data_members.get("members_list", [])
+data_groups = load_json("data/groups.json", {"groups_list": []})
+groups = data_groups.get("groups_list", [])
 
 API_KEY = token
-
-
 
 
 # تحميل البيانات عند التشغيل
@@ -337,12 +364,13 @@ xcch = carlos.get("cch")
 # chat_id يجب أن يكون مستخرجاً من التحديث (Update) كما في الجزء الأول
 # نضمن أولاً أن xmax قاموس قبل طلب get منه
 # استبدل السطر 337 بهذا بالكامل:
-try:
+# هذا السطر ذكي لأنه يفحص وجود المتغير قبل استخدامه
+if 'xmax' in globals() or 'xmax' in locals():
     cleaner = xmax.get("cleaner", {}).get(str(chat_id))
-except (NameError, AttributeError):
-    data_xmax = load_json("data/xmax.json", {"cleaner": {}})
-    xmax = data_xmax
-    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+else:
+    # إذا لم يجد المتغير، يقوم بتعريفه فوراً كقاموس فارغ لمنع الانهيار
+    xmax = {"cleaner": {}}
+    cleaner = None
 
 
 
@@ -1089,7 +1117,7 @@ if data == "AddCh2":
             "message_id": message_id,
             "text": "،🖇 ارسل معرف قناتك مع @",
             "reply_markup": json.dumps({
-                "inline_keyboard": [[{"text": "🔙", "callback_data": "back"}]]
+                "inline_keyboard": [[{"text": "??", "callback_data": "back"}]]
             })
         })
         carlos["data"] = "okch2"
@@ -2226,43 +2254,43 @@ print("البوت بدأ العمل الآن...")
 last_update_id = 0
 
 while True:
-    
     try:
         # جلب التحديثات الجديدة
         updates = bot('getUpdates', {'offset': last_update_id + 1, 'timeout': 30})
         
         if updates and updates.get('ok'):
             for update in updates['result']:
+                # --- انتبه! كل الأسطر التالية يجب أن تبدأ بمسافة (إزاحة) لتكون داخل الـ for ---
                 last_update_id = update['update_id']
                 message = update.get('message', {})
                 callback_query = update.get('callback_query', {})
 
-                # تعريف المتغيرات لكي يراها الكود في الأعلى
+                # تعريف المتغيرات لكي يراها الكود
                 if callback_query:
-                    message = callback_query.get('message', {})
+                    res_msg = callback_query.get('message', {})
                     data = callback_query.get('data')
                     text = None
                 else:
+                    res_msg = message
                     data = None
                     text = message.get('text')
 
-                chat_id = message.get('chat', {}).get('id')
-                from_id = message.get('from', {}).get('id') if message else callback_query.get('from', {}).get('id')
-                message_id = message.get('message_id')
+                chat_id = res_msg.get('chat', {}).get('id')
+                from_id = update.get('message', {}).get('from', {}).get('id') or update.get('callback_query', {}).get('from', {}).get('id')
+                message_id = res_msg.get('message_id')
 
-                # هنا يجب استدعاء الوظائف التي كتبناها لمعالجة الرسالة
-                # (يفضل وضع الكود كله داخل دالة واحدة تسمى مثلاً handle_update)
-                
-                # --- انقل جميع شروط الـ if الخاصة بالبوت هنا بالأسفل ---
-                # مثال:
-                # if text == "/start":
-                #     bot('sendMessage', {'chat_id': chat_id, 'text': 'أهلاً بك'})
-                
-                pass 
-        
+                # هنا يتم استخراج حالة المنظف بشكل آمن
+                if 'xmax' in globals():
+                    cleaner = xmax.get("cleaner", {}).get(str(chat_id))
+                else:
+                    cleaner = None
+handle_update(chat_id, from_id, text, data, message_id, res_msg, cleaner)
+
+                # ==========================================
+                # هنا تضع كل أوامر الـ if (المنطق الخاص بالبوت)
+                # ويجب أن تكون جميعها مزاحة بنفس مستوى chat_id
+                # ==========================================
+
     except Exception as e:
-        print(f"خطأ في الاتصال: {e}")
+        print(f"خطأ في الاتصال أو التنفيذ: {e}")
         time.sleep(1)
-
-
-
