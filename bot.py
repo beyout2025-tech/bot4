@@ -47,6 +47,9 @@ members = data_members.get("members_list", [])
 # تحميل بيانات المجموعات
 data_groups = load_json("data/groups.json", {"groups_list": []})
 groups = data_groups.get("groups_list", [])
+# تحميل بيانات المنظف بشكل آمن
+data_xmax = load_json("data/xmax.json", {"cleaner": {}})
+xmax = data_xmax
 
 
 
@@ -330,7 +333,9 @@ else:
 xch = carlos.get("ch")
 xcch = carlos.get("cch")
 # chat_id يجب أن يكون مستخرجاً من التحديث (Update) كما في الجزء الأول
-cleaner = xmax.get("cleaner", {}).get(str(chat_id)) 
+# نضمن أولاً أن xmax قاموس قبل طلب get منه
+cleaner = xmax.get("cleaner", {}).get(str(chat_id)) if isinstance(xmax, dict) else None
+
 
 # --- (الإحصائيات والمتغيرات) --- #
 
