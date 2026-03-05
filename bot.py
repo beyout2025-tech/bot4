@@ -1129,15 +1129,19 @@ if data == "ALLCH":
     if from_id in id_admin or from_id == int(admin):
         ch1_val = carlos.get("ch1", "غير معينة")
         ch2_val = carlos.get("ch2", "غير معينة")
+        
+        # نستخدم تعديل الرسالة فقط لتغيير المحتوى والأزرار
         bot("editMessageText", {
             "chat_id": chat_id,
             "message_id": message_id,
-            "text": fInternal_text2 := f"،🖇:هذه قائمة القنوات الأشتراك الاجباري \n،🖇:القناة الاولى {ch1_val}\n،🖇:القناة الثانية  {ch2_val}",
+            "text": f"🖇:هذه قائمة القنوات الأشتراك الاجباري \n🖇:القناة الاولى {ch1_val}\n🖇:القناة الثانية  {ch2_val}",
             "reply_markup": json.dumps({
-                "inline_keyboard": [[{"text": "🔙", "callback_data": "back"}]]
+                "inline_keyboard": [
+                    [{'text': 'حذف القناة 1', 'callback_data': 'delch1'}, {'text': 'حذف القناة 2', 'callback_data': 'delch2'}],
+                    [{'text': '🔙', 'callback_data': 'back'}]
+                ]
             })
         })
-
 
 
 
